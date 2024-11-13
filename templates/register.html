@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Sherlock Holmes Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        .container {
+    max-width: 800px; /* Limit the maximum width as on the login page */
+    width: 100%; /* Use the full width up to the max-width */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+button[type="submit"] {
+    width: 100%; /* Ensures input fields fill the container */
+    padding: 10px; /* Improved form handling */
+    margin-top: 8px; /* Spacing between inputs */
+}
+
+button[type="submit"] {
+    cursor: pointer; /* Indicates clickable items */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-center bg-gray-100">
+    <div class="container mx-auto px-4">
+        <div class="bg-blue-900 text-white text-center py-6 mb-8 rounded-lg flex items-center justify-center">
+            <img src="{{ url_for('static', filename='images/white.png') }}" alt="Sherlock Holmes Icon" style="height: 40px; width: 40px; margin-right: 12px;">
+            <h1 class="text-4xl font-bold">Sherlock Holmes Chatbot</h1>
+        </div>
+
+        <form id="register-form" class="space-y-4 bg-white shadow-md rounded-lg p-6">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Register
+                </button>
+            </div>
+        </form>
+        <p id="error-message" class="mt-2 text-sm text-red-600 hidden"></p>
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('login') }}" class="text-sm text-blue-600 hover:text-blue-500">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            fetch('/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/login';  // Redirect to login page on success
+                } else {
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = data.message;
+                    errorMessage.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
